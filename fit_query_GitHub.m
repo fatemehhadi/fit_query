@@ -66,7 +66,7 @@ c_d = 0.35;
 query_spectrum = c_a * component_a + c_b * component_b + c_c *component_c + c_d *component_d;
 
 % Let's add it some noise for a bit of realism:
-query_spectrum = query_spectrum +   0.02*rand(1, wavelength_len);
+query_spectrum = query_spectrum + 0.02*rand(1, wavelength_len);
 
 % Rename the query spectrum
 y = query_spectrum;
@@ -99,32 +99,32 @@ plot(1:1:iterations,J_history)
 xlabel('iteration')
 ylabel('objective function')
 
-% %  Set options for fminunc
-% lambda = 0;
-% options = optimoptions(@fminunc,'Algorithm','Quasi-Newton','GradObj', 'on', 'MaxIter', 10000);
-% 
-% %  Run fminunc to obtain the optimal theta
-% %  This function will return theta and the cost 
-% [theta_fminunc, J_fminunc] = fminunc(@(t)(costFunctionReg(t, X, y, lambda)), initial_theta, options);
-% csvwrite('theta_fminunc.csv', theta_fminunc)
-% 
-% %  Set options for fmincon
-% lb = zeros(n+1, 1);
-% lb = lb';
-% ub = zeros(n+1, 1);
-% ub = ub';
-% ub(1,:) = 2;
-% 
-% A = [];
-% b = [];
-% Aeq = [];
-% beq = [];
-% 
-% %  Run fmincon to obtain the optimal theta
-% %  This function will return theta and the cost
-% initial_theta(3,1) = 1;
-% [theta_fmincon, J_fmincon] = fmincon(@(t)(costFunctionReg(t, X, y, lambda)), initial_theta,A,b,Aeq,beq,lb,ub);
-% csvwrite('theta_fmincon.csv', theta_fmincon)
+%  Set options for fminunc
+lambda = 0;
+options = optimoptions(@fminunc,'Algorithm','Quasi-Newton','GradObj', 'on', 'MaxIter', 10000);
+ 
+%  Run fminunc to obtain the optimal theta
+%  This function will return theta and the cost 
+[theta_fminunc, J_fminunc] = fminunc(@(t)(costFunctionReg(t, X, y, lambda)), initial_theta, options);
+csvwrite('theta_fminunc.csv', theta_fminunc)
+ 
+%  Set options for fmincon
+lb = zeros(n+1, 1);
+lb = lb';
+ub = zeros(n+1, 1);
+ub = ub';
+ub(1,:) = 2;
+ 
+A = [];
+b = [];
+Aeq = [];
+beq = [];
+ 
+%  Run fmincon to obtain the optimal theta
+%  This function will return theta and the cost
+initial_theta(3,1) = 1;
+[theta_fmincon, J_fmincon] = fmincon(@(t)(costFunctionReg(t, X, y, lambda)), initial_theta,A,b,Aeq,beq,lb,ub);
+csvwrite('theta_fmincon.csv', theta_fmincon)
 
 % Plot results
 figure
@@ -137,25 +137,24 @@ hold on
 h=X*theta;
 plot(wavelength_range,h,'b')
 
-% hold on
-% h_fminunc=X*theta_fminunc;
-% plot(wavelength_range,h_fminunc,'m')
-% 
-% hold on
-% h_fmincon=X*theta_fmincon;
-% plot(wavelength_range,h_fmincon,'c')
+hold on
+h_fminunc=X*theta_fminunc;
+plot(wavelength_range,h_fminunc,'m')
+ 
+hold on
+h_fmincon=X*theta_fmincon;
+plot(wavelength_range,h_fmincon,'c')
 
 xlabel('wavenumber')
 ylabel('normalized amplitude')
-legend('query','normal equation','gradient descent')
-%legend('query','normal equation','gradient descent','fminunc','fmincon','starphire')
+legend('query','normal equation','gradient descent','fminunc','fmincon')
 
 % Compare objective functions
 J_normal = sum((h_nomral_equation-y).^2)/(2*m)
 J = sum((h-y).^2)/(2*m)
 
-% %J3 = sum((h_fminunc-y).^2)/(2*m)
-% J_fminunc
-% 
-% %J4 = sum((h_fmincon-y).^2)/(2*m)
-% J_fmincon
+%J3 = sum((h_fminunc-y).^2)/(2*m)
+J_fminunc
+ 
+%J4 = sum((h_fmincon-y).^2)/(2*m)
+J_fmincon
